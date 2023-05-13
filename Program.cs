@@ -6,29 +6,27 @@
 
     public class Program
     {
-        public static void Main()
+        public static async Task Main()
         {
             long limit = 2;
             bool enteredNoGCRegion = false;
-            
-            enteredNoGCRegion = GC.TryStartNoGCRegion((int.MaxValue)/10);
+
+            enteredNoGCRegion = GC.TryStartNoGCRegion((int.MaxValue) / 10);
             var stopwatch = new Stopwatch();
             while (true)
-            {                
-                limit++;                
+            {
+                limit++;
                 stopwatch.Start();
 
                 // Call the asynchronous method  2_147_483_600
-                Task<long> maxPrimeTask = MaxPrimeLessThanAsync(limit);                
+                long maxPrime = await MaxPrimeLessThanAsync(limit);
 
-                // Wait for the task to complete to prevent the program from exiting prematurely
-                maxPrimeTask.Wait();                
                 stopwatch.Stop();
-                
-                // Print the result
-                Console.Write($"Max prime less than {limit,10} is {maxPrimeTask.Result,10} ");
 
-                Console.Write($"task {stopwatch.ElapsedMilliseconds, 5} ms.");
+                // Print the result
+                Console.Write($"Max prime less than {limit,10} is {maxPrime,10} ");
+
+                Console.Write($"task took {stopwatch.ElapsedMilliseconds,5} ms.");
                 // Print the current memory usage
                 long memoryUsed = Process.GetCurrentProcess().WorkingSet64;
                 Console.Write($" memory usage: {memoryUsed: 10}\r");
